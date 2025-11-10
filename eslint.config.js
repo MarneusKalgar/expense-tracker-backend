@@ -5,7 +5,7 @@ import perfectionist from "eslint-plugin-perfectionist";
 
 export default [
   {
-    ignores: ["dist/**", "**/*.js"]
+    ignores: ["dist/**", "**/*.js"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

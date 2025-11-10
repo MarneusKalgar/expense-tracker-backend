@@ -48,5 +48,5 @@
     }
   },
   "include": ["src/**/*", ".env"],
-  "exclude": ["**/*.test.ts", "**/*.spec.ts", "node_modules", "dist"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "node_modules", "dist"]
 }
