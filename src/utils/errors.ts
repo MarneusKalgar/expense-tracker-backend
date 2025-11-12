@@ -26,7 +26,7 @@ export class AuthError extends BaseError {
 }
 
 export class BadRequestError extends BaseError {
-  constructor(message = "Already exists", httpCode = HttpStatusCodes.BAD_REQUEST) {
+  constructor(message = "Bad request", httpCode = HttpStatusCodes.BAD_REQUEST) {
     super(message, httpCode);
 
     Error.captureStackTrace(this, BadRequestError);
@@ -85,6 +85,6 @@ export class ValidationError extends BaseError {
   constructor(message = "Validation failed", httpCode = HttpStatusCodes.BAD_REQUEST) {
     super(message, httpCode);
 
-    Error.captureStackTrace(this, NotFoundError);
+    Error.captureStackTrace(this, ValidationError);
   }
 }

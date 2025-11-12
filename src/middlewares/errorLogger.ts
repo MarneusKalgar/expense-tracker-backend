@@ -14,7 +14,7 @@ export const errorLogger = (
   if (typeof errorLog === "function") {
     errorLog("HttpError", error);
   } else {
-    // TODO COnfig logger
+    // TODO Config logger
     // logger.error('HttpError', error);
   }
 

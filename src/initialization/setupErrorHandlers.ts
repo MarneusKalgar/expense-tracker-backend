@@ -5,7 +5,7 @@ import { NotFoundError } from "@/utils/index.js";
 
 export const setupErrorHandlers = (app: Express) => {
   app.use((req: Request, res: Response, next: NextFunction) => {
-    next(new NotFoundError("Not found"));
+    next(new NotFoundError("Resource not found"));
   });
 
   app.use(errorLogger);
