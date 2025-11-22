@@ -12,7 +12,7 @@ export const serverSetup = async (app: Express) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  app.use(cors());
+  app.use(cors()); // TODO configure CORS properly for production
   app.use(httpContext.middleware);
 
   app.use("/api/v1", router);
