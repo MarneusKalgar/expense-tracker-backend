@@ -10,7 +10,7 @@ const options: DataSourceOptions = {
   ssl: {
     rejectUnauthorized: false,
   },
-  synchronize: true, // Note: set to false in production
+  synchronize: process.env.NODE_ENV === "development",
   type: "postgres",
   url: process.env.DATABASE_URL,
 };

@@ -1,11 +1,6 @@
-export interface LoginInput {
-  email: string;
-  password: string;
-}
+import z from "zod";
 
-export interface SignupInput {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-}
+import { LoginInputSchema, SignupInputSchema } from "@/schemas/index.js";
+
+export type LoginInput = z.infer<typeof LoginInputSchema>;
+export type SignupInput = z.infer<typeof SignupInputSchema>;
