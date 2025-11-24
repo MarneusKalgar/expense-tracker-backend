@@ -23,14 +23,7 @@ class AuthService {
   }
 
   async signup(data: SignupInput) {
-    const { email, firstName, lastName, password } = data;
-
-    const userId = await userService.createUser({
-      email,
-      firstName,
-      lastName,
-      password,
-    });
+    const userId = await userService.createUser(data);
     return userId;
   }
 }

@@ -13,7 +13,10 @@ class UserService {
       throw new BadRequestError("Email is already in use");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(process.env.BCRYPT_SALT_ROUNDS ?? "10") || 10,
+    );
 
     const newUser = dataSource.getRepository(User).create({
       email,
