@@ -82,7 +82,7 @@ export class UploadError extends BaseError {
 }
 
 export class ValidationError extends BaseError {
-  constructor(message = "Validation failed", httpCode = HttpStatusCodes.BAD_REQUEST) {
+  constructor(message = "Validation failed", httpCode = HttpStatusCodes.UNPROCESSABLE_ENTITY) {
     super(message, httpCode);
 
     Error.captureStackTrace(this, ValidationError);

@@ -24,7 +24,10 @@
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    //"exactOptionalPropertyTypes": true,
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
 
     // Style Options
     // "noImplicitReturns": true,
@@ -42,6 +45,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "strictPropertyInitialization": false,
 
     "paths": {
       "@/*": ["./src/*"]

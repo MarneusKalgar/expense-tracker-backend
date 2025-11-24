@@ -5,6 +5,7 @@ import { BaseError } from "@/utils/index.js";
 
 export const errorResponder = (error: BaseError, req: Request, res: Response) => {
   const { httpCode, message } = error;
+
   const defaultHttpCode = httpCode ?? HttpStatusCodes.INTERNAL_SERVER_ERROR;
 
   res.status(defaultHttpCode).json({

@@ -1,13 +1,10 @@
-import express, { Request, Response } from "express";
+import express from "express";
+
+import { loginUser, signupUser } from "@/controllers/index.js";
+import { asyncWrapper, validateRequestBody } from "@/middlewares/index.js";
+import { LoginInputSchema, SignupInputSchema } from "@/schemas/auth.js";
 
 export const authRouter = express.Router();
 
-authRouter.post("/signup", (req: Request, res: Response) => {
-  // Placeholder for registration logic
-  res.send("Register route");
-});
-
-authRouter.post("/login", (req: Request, res: Response) => {
-  // Placeholder for login logic
-  res.send("Login route");
-});
+authRouter.post("/signup", validateRequestBody(SignupInputSchema), asyncWrapper(signupUser));
+authRouter.post("/login", validateRequestBody(LoginInputSchema), asyncWrapper(loginUser));
