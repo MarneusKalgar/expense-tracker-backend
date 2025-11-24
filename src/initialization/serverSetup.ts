@@ -7,6 +7,7 @@ import { router } from "@/routes/index.js";
 
 import { setupErrorHandlers } from "./setupErrorHandlers.js";
 
+// TODO Add environment check and validation
 export const serverSetup = async (app: Express) => {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true }));

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 
 import { LoginInput, SignupInput } from "@/types/index.js";
+import { ForbiddenError } from "@/utils/index.js";
 
 import { userService } from "./user.js";
 
@@ -10,12 +11,12 @@ class AuthService {
 
     const user = await userService.getUserByEmail(email);
     if (!user) {
-      throw new Error("Invalid email or password");
+      throw new ForbiddenError("Invalid email or password");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Invalid email or password");
+      throw new ForbiddenError("Invalid email or password");
     }
 
     return user.id;
@@ -24,13 +25,11 @@ class AuthService {
   async signup(data: SignupInput) {
     const { email, firstName, lastName, password } = data;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const userId = await userService.createUser({
       email,
       firstName,
       lastName,
-      password: hashedPassword,
+      password,
     });
     return userId;
   }

@@ -15,7 +15,7 @@ export class User {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @Column({ nullable: false, type: "varchar", unique: true })
+  @Column({ length: 255, nullable: false, type: "varchar", unique: true })
   email: string;
 
   @Column({
@@ -36,6 +36,7 @@ export class User {
   lastName: string;
 
   @Column({
+    length: 60,
     nullable: false,
     //select: false,  // Exclude password from queries by default
     type: "varchar",
