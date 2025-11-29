@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 
+import { tokenService, userService } from "@/services/index.js";
 import { LoginInput, SignupInput } from "@/types/index.js";
 import { ForbiddenError } from "@/utils/index.js";
-
-import { userService } from "./user.js";
 
 class AuthService {
   async login(data: LoginInput) {
@@ -19,7 +18,12 @@ class AuthService {
       throw new ForbiddenError("Invalid email or password");
     }
 
-    return user.id;
+    const payload = { email: user.email, userId: user.id };
+
+    const accessToken = tokenService.generateAccessToken(payload);
+    const refreshToken = tokenService.generateRefreshToken(payload);
+
+    return { accessToken, refreshToken, userId: user.id };
   }
 
   async signup(data: SignupInput) {
