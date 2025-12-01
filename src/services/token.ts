@@ -1,37 +1,48 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 
-const accessSecret = process.env.JWT_ACCESS_SECRET;
-const accessExpiresIn = process.env.JWT_ACCESS_EXPIRES_IN;
-const refreshSecret = process.env.JWT_REFRESH_SECRET;
-const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN;
+import { env } from "@/configs/index.js";
+import { AuthError } from "@/utils/index.js";
+
+interface JwtPayload {
+  email: string;
+  exp: number;
+  iat: number;
+  userId: string;
+}
 
 class TokenService {
   generateAccessToken(payload: object) {
-    if (!accessSecret || !accessExpiresIn) {
-      throw new Error(
-        "JWT access secret or expiration time are not defined in environment variables",
-      );
-    }
-
-    const accessToken = jwt.sign(payload, accessSecret, {
-      expiresIn: accessExpiresIn,
+    const accessToken = jwt.sign(payload, env.jwt.accessSecret, {
+      expiresIn: env.jwt.accessExpiresIn,
     } as SignOptions);
 
     return accessToken;
   }
 
   generateRefreshToken(payload: object) {
-    if (!refreshSecret || !refreshExpiresIn) {
-      throw new Error(
-        "JWT refresh secret or expiration time are not defined in environment variables",
-      );
-    }
-
-    const refreshToken = jwt.sign(payload, refreshSecret, {
-      expiresIn: refreshExpiresIn,
+    const refreshToken = jwt.sign(payload, env.jwt.refreshSecret, {
+      expiresIn: env.jwt.refreshExpiresIn,
     } as SignOptions);
 
     return refreshToken;
+  }
+
+  verifyAccessToken(token: string): JwtPayload {
+    try {
+      return jwt.verify(token, env.jwt.accessSecret) as JwtPayload;
+    } catch (error) {
+      // eslint-disable-line
+      throw new AuthError("Invalid or expired access token");
+    }
+  }
+
+  verifyRefreshToken(token: string): JwtPayload {
+    try {
+      return jwt.verify(token, env.jwt.refreshSecret) as JwtPayload;
+    } catch (error) {
+      // eslint-disable-line
+      throw new AuthError("Invalid or expired refresh token");
+    }
   }
 }
 
