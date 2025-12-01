@@ -78,6 +78,10 @@ class AuthService {
   }
 
   async signup(data: SignupInput) {
+    const existingUser = await userService.getUserByEmail(data.email);
+    if (existingUser) {
+      throw new ForbiddenError("Email is already in use");
+    }
     const userId = await userService.createUser(data);
     return userId;
   }

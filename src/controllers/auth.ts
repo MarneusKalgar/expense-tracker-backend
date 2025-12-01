@@ -12,7 +12,6 @@ export const signupUser = async (req: Request, res: Response) => {
     password,
   });
 
-  // TODO: Implement email verification in the future
   res.status(201).json({
     data: { userId: newUserId },
     message: "User created successfully. Please log in.",

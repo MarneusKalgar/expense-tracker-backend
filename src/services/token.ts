@@ -30,8 +30,8 @@ class TokenService {
   verifyAccessToken(token: string): JwtPayload {
     try {
       return jwt.verify(token, env.jwt.accessSecret) as JwtPayload;
+      // eslint-disable-next-line
     } catch (error) {
-      // eslint-disable-line
       throw new AuthError("Invalid or expired access token");
     }
   }
@@ -39,8 +39,8 @@ class TokenService {
   verifyRefreshToken(token: string): JwtPayload {
     try {
       return jwt.verify(token, env.jwt.refreshSecret) as JwtPayload;
+      // eslint-disable-next-line
     } catch (error) {
-      // eslint-disable-line
       throw new AuthError("Invalid or expired refresh token");
     }
   }
