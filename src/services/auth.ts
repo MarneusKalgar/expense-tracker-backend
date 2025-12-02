@@ -9,7 +9,7 @@ class AuthService {
   async login(data: LoginInput) {
     const { email, password } = data;
 
-    const user = await userService.getUserByEmail(email);
+    const user = await userService.getUserByEmailForAuth(email);
     if (!user) {
       throw new ForbiddenError("Invalid email or password");
     }
@@ -38,7 +38,7 @@ class AuthService {
     const userId = await redisClient.get(`refreshToken:${refreshToken}`);
 
     if (userId) {
-      await tokenService.revokeRefreshToken(refreshToken, userId);
+      await tokenService.revokeRefreshToken(refreshToken);
     }
   }
 
@@ -59,9 +59,9 @@ class AuthService {
       throw new ForbiddenError("Token has been revoked");
     }
 
-    const user = await userService.getUserById(userId);
+    const user = await userService.getUserByIdForAuth(userId);
     if (!user) {
-      await tokenService.revokeRefreshToken(refreshToken, userId);
+      await tokenService.revokeRefreshToken(refreshToken);
       throw new ForbiddenError("User not found");
     }
 
@@ -72,7 +72,7 @@ class AuthService {
   }
 
   async signup(data: SignupInput) {
-    const existingUser = await userService.getUserByEmail(data.email);
+    const existingUser = await userService.getUserByEmailForAuth(data.email);
     if (existingUser) {
       throw new ForbiddenError("Email is already in use");
     }

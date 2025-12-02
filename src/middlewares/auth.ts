@@ -14,7 +14,7 @@ export const authenticate = async (req: RequestWithPayload, res: Response, next:
     const token = authHeader.split(" ")[1];
     const decoded = tokenService.verifyAccessToken(token!);
 
-    req.user = { email: decoded.email as string, userId: decoded.userId as string };
+    req.user = { email: decoded.email, userId: decoded.userId };
 
     next();
   } catch (error) {

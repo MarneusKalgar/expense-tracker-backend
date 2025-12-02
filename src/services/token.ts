@@ -32,52 +32,44 @@ class TokenService {
     return refreshToken;
   }
 
-  async revokeRefreshToken(token: string, userId: string) {
-    const pipeline = redisClient.multi();
-    pipeline.srem(`user:${userId}:refreshTokens`, token);
-    pipeline.del(`refreshToken:${token}`);
-    await pipeline.exec();
+  async revokeRefreshToken(token: string) {
+    try {
+      await redisClient.del(`refreshToken:${token}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to revoke refresh token: ${errorMessage}`);
+    }
   }
 
   async storeRefreshToken(token: string, userId: string) {
-    const multi = redisClient.multi();
-    const setKey = `user:${userId}:refreshTokens`;
-
-    const existingTokens = await redisClient.smembers(setKey);
-
-    for (const oldToken of existingTokens) {
-      const exists = await redisClient.exists(`refreshToken:${oldToken}`);
-      if (!exists) {
-        multi.srem(setKey, oldToken);
-      }
+    try {
+      await redisClient.set(`refreshToken:${token}`, userId, "EX", env.redis.ttl);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to store refresh token: ${errorMessage}`);
     }
-
-    multi.set(`refreshToken:${token}`, userId, "EX", env.redis.ttl);
-    multi.sadd(`user:${userId}:refreshTokens`, token);
-    multi.expire(`user:${userId}:refreshTokens`, env.redis.ttl);
-    await multi.exec();
   }
 
   async validateRefreshToken(token: string, userId: string) {
-    const result = await redisClient.sismember(`user:${userId}:refreshTokens`, token);
-    return result === 1;
+    const storedUserId = await redisClient.get(`refreshToken:${token}`);
+    return storedUserId === userId;
   }
 
   verifyAccessToken(token: string): JwtPayload {
     try {
       return jwt.verify(token, env.jwt.accessSecret) as JwtPayload;
-      // eslint-disable-next-line
     } catch (error) {
-      throw new AuthError("Invalid or expired access token");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      throw new AuthError(`Invalid or expired access token: ${errorMessage}`);
     }
   }
 
   verifyRefreshToken(token: string): JwtPayload {
     try {
       return jwt.verify(token, env.jwt.refreshSecret) as JwtPayload;
-      // eslint-disable-next-line
     } catch (error) {
-      throw new AuthError("Invalid or expired refresh token");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      throw new AuthError(`Invalid or expired refresh token: ${errorMessage}`);
     }
   }
 }

@@ -31,6 +31,13 @@ class UserService {
 
   async getUserByEmail(email: string) {
     const user = await dataSource.getRepository(User).findOne({
+      where: { email },
+    });
+    return user;
+  }
+
+  async getUserByEmailForAuth(email: string) {
+    const user = await dataSource.getRepository(User).findOne({
       select: ["id", "email", "firstName", "lastName", "password"],
       where: { email },
     });
@@ -38,6 +45,13 @@ class UserService {
   }
 
   async getUserById(userId: string) {
+    const user = await dataSource.getRepository(User).findOne({
+      where: { id: userId },
+    });
+    return user;
+  }
+
+  async getUserByIdForAuth(userId: string) {
     const user = await dataSource.getRepository(User).findOne({
       select: ["id", "email", "firstName", "lastName", "password"],
       where: { id: userId },
