@@ -1,6 +1,5 @@
 import { dataSource } from "@/data-source.js";
 
-// TODO Add logger
 export const setupDb = async () => {
   try {
     await dataSource.initialize();

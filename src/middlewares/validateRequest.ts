@@ -1,26 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodType } from "zod";
 
-interface ZodErrorMessage {
-  code: string;
-  expected: string;
-  message: string;
-  path: (number | string)[];
-}
+import { ValidationError } from "@/utils/errors.js";
 
 export const validateRequestBody = (schema: ZodType) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = schema.safeParse(req.body);
 
-      if (result.error) {
-        const parsed: ZodErrorMessage[] = JSON.parse(result.error as unknown as string);
-        const message = parsed?.map(el => el.message).join(", ") || "Invalid request body";
-
-        return res.status(422).json({
-          message,
-          success: false,
-        });
+      if (!result.success) {
+        const message =
+          result.error.issues
+            ?.map(el => `Field: ${el.path.join(".")}, Error: ${el.message}`)
+            .join(", ") || "Invalid request body";
+        throw new ValidationError(message);
       }
 
       next();

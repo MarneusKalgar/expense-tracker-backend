@@ -35,6 +35,29 @@ class UserService {
     });
     return user;
   }
+
+  async getUserByEmailWithPassword(email: string) {
+    const user = await dataSource.getRepository(User).findOne({
+      select: ["id", "email", "firstName", "lastName", "password"],
+      where: { email },
+    });
+    return user;
+  }
+
+  async getUserById(userId: string) {
+    const user = await dataSource.getRepository(User).findOne({
+      where: { id: userId },
+    });
+    return user;
+  }
+
+  async getUserByIdWithPassword(userId: string) {
+    const user = await dataSource.getRepository(User).findOne({
+      select: ["id", "email", "firstName", "lastName", "password"],
+      where: { id: userId },
+    });
+    return user;
+  }
 }
 
 export const userService = new UserService();

@@ -38,7 +38,7 @@ export class User {
   @Column({
     length: 60,
     nullable: false,
-    //select: false,  // Exclude password from queries by default
+    select: false, // Exclude password from queries by default
     type: "varchar",
   })
   password: string;
