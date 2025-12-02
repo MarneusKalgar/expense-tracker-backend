@@ -1,16 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 
 import { tokenService } from "@/services/index.js";
 import { AuthError } from "@/utils/index.js";
 
-interface ExtendedRequest extends Request {
-  user?: {
-    email: string;
-    userId: string;
-  };
-}
-
-export const authenticate = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+export const authenticate = async (req: RequestWithPayload, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
