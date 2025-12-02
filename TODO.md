@@ -17,6 +17,7 @@
 
 ## Auth
 
+- Implement Refresh token rotation
 - Implement email verification
 - Implement refresh token rotation for enhanced security
 - Implement password reset functionality

@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 
 import { redisClient } from "@/configs/index.js";
-import { env } from "@/configs/index.js";
 import { tokenService, userService } from "@/services/index.js";
 import { LoginInput, SignupInput } from "@/types/index.js";
 import { ForbiddenError } from "@/utils/index.js";
@@ -15,7 +14,8 @@ class AuthService {
       throw new ForbiddenError("Invalid email or password");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const hashedPassword = user?.password ?? (await bcrypt.hash("dummy-password", 10));
+    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
     if (!isPasswordValid) {
       throw new ForbiddenError("Invalid email or password");
     }
@@ -25,26 +25,21 @@ class AuthService {
     const accessToken = tokenService.generateAccessToken(payload);
     const refreshToken = tokenService.generateRefreshToken(payload);
 
-    await redisClient.set(`refreshToken:${refreshToken}`, user.id, "EX", env.redis.ttl);
-    await redisClient.sadd(`user:${user.id}:refreshTokens`, refreshToken);
-    await redisClient.expire(`user:${user.id}:refreshTokens`, env.redis.ttl);
+    await tokenService.storeRefreshToken(refreshToken, user.id);
 
     return { accessToken, refreshToken, userId: user.id };
   }
 
   async logout(refreshToken: string) {
     if (!refreshToken) {
-      throw new ForbiddenError("No refresh token provided");
+      return;
     }
 
     const userId = await redisClient.get(`refreshToken:${refreshToken}`);
 
-    if (!userId) {
-      throw new ForbiddenError("Invalid refresh token");
+    if (userId) {
+      await tokenService.revokeRefreshToken(refreshToken, userId);
     }
-
-    await redisClient.srem(`user:${userId}:refreshTokens`, refreshToken);
-    await redisClient.del(`refreshToken:${refreshToken}`);
   }
 
   async refreshAccessToken(refreshToken: string) {
@@ -59,15 +54,14 @@ class AuthService {
       throw new ForbiddenError("Invalid refresh token");
     }
 
-    const isValid = await redisClient.sismember(`user:${userId}:refreshTokens`, refreshToken);
+    const isValid = await tokenService.validateRefreshToken(refreshToken, userId);
     if (!isValid) {
       throw new ForbiddenError("Token has been revoked");
     }
 
     const user = await userService.getUserById(userId);
     if (!user) {
-      await redisClient.del(`refreshToken:${refreshToken}`);
-      await redisClient.srem(`user:${userId}:refreshTokens`, refreshToken);
+      await tokenService.revokeRefreshToken(refreshToken, userId);
       throw new ForbiddenError("User not found");
     }
 
