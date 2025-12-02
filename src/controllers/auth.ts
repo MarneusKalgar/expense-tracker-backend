@@ -26,7 +26,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    maxAge: 86400, // 1 day
+    maxAge: 86400000, // 1 day
+    path: "/",
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
   });
@@ -56,6 +57,7 @@ export const logoutUser = async (req: Request, res: Response) => {
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
+    path: "/",
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
   });
