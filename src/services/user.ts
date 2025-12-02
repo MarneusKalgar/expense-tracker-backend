@@ -36,7 +36,7 @@ class UserService {
     return user;
   }
 
-  async getUserByEmailForAuth(email: string) {
+  async getUserByEmailWithPassword(email: string) {
     const user = await dataSource.getRepository(User).findOne({
       select: ["id", "email", "firstName", "lastName", "password"],
       where: { email },
@@ -51,7 +51,7 @@ class UserService {
     return user;
   }
 
-  async getUserByIdForAuth(userId: string) {
+  async getUserByIdWithPassword(userId: string) {
     const user = await dataSource.getRepository(User).findOne({
       select: ["id", "email", "firstName", "lastName", "password"],
       where: { id: userId },
