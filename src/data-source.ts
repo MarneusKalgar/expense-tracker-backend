@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 
-import { User } from "./entity/index.js";
+import { env } from "@/configs/index.js";
+import { User } from "@/entity/index.js";
 
 const options: DataSourceOptions = {
   entities: [User],
@@ -10,9 +11,9 @@ const options: DataSourceOptions = {
   ssl: {
     rejectUnauthorized: false,
   },
-  synchronize: process.env.NODE_ENV === "development",
+  synchronize: env.nodeEnv === "development",
   type: "postgres",
-  url: process.env.DATABASE_URL,
+  url: env.databaseUrl,
 };
 
 export const dataSource = new DataSource(options);

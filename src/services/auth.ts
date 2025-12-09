@@ -1,11 +1,14 @@
 import bcrypt from "bcrypt";
+import { randomBytes } from "node:crypto";
 
 import { redisClient } from "@/configs/index.js";
+import { env } from "@/configs/index.js";
 import { tokenService, userService } from "@/services/index.js";
 import { LoginInput, SignupInput } from "@/types/index.js";
 import { AuthError } from "@/utils/index.js";
 
 class AuthService {
+  private passwordHash = bcrypt.hashSync(randomBytes(16).toString("hex"), env.bcrypt.saltRounds);
   /**
    * Authenticates a user with email and password
    * @param data - Login credentials containing email and password
@@ -16,14 +19,11 @@ class AuthService {
     const { email, password } = data;
 
     const user = await userService.getUserByEmailWithPassword(email);
-    if (!user) {
-      throw new AuthError("Invalid email");
-    }
-
-    const hashedPassword = user?.password ?? (await bcrypt.hash("dummy-password", 10));
+    const hashedPassword = user?.password ?? this.passwordHash;
     const isPasswordValid = await bcrypt.compare(password, hashedPassword);
-    if (!isPasswordValid) {
-      throw new AuthError("Invalid password");
+
+    if (!user || !isPasswordValid) {
+      throw new AuthError("Invalid credentials");
     }
 
     const payload = { email: user.email, userId: user.id };
