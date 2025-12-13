@@ -1,9 +1,8 @@
 import bcrypt from "bcrypt";
 import { randomBytes } from "node:crypto";
 
-import { redisClient } from "@/configs/index.js";
 import { env } from "@/configs/index.js";
-import { tokenService, userService } from "@/services/index.js";
+import { redisService, tokenService, userService } from "@/services/index.js";
 import { LoginInput, SignupInput } from "@/types/index.js";
 import { AuthError } from "@/utils/index.js";
 
@@ -46,7 +45,7 @@ class AuthService {
       return;
     }
 
-    const userId = await redisClient.get(`refreshToken:${refreshToken}`);
+    const userId = await redisService.client.get(`refreshToken:${refreshToken}`);
 
     if (userId) {
       await tokenService.revokeRefreshToken(refreshToken);
@@ -64,7 +63,7 @@ class AuthService {
       throw new AuthError("No refresh token provided");
     }
 
-    const userId = await redisClient.get(`refreshToken:${refreshToken}`);
+    const userId = await redisService.client.get(`refreshToken:${refreshToken}`);
     if (!userId) {
       throw new AuthError("Invalid refresh token");
     }

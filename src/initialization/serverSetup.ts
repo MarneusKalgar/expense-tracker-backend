@@ -19,7 +19,9 @@ export const serverSetup = async (app: Express) => {
 
   setupErrorHandlers(app);
 
-  app.listen(process.env.PORT, () => {
+  const server = app.listen(process.env.PORT, () => {
     console.log(`Server is listening on port ${process.env.PORT}`);
   });
+
+  return server;
 };

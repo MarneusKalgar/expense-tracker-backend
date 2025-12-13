@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 
 import { env } from "@/configs/index.js";
-import { dataSource } from "@/data-source.js";
 import { User } from "@/entity/User.js";
+import { dataSource } from "@/initialization/db/data-source.js";
 import { SignupInput } from "@/types/index.js";
 import { BadRequestError } from "@/utils/index.js";
 class UserService {
