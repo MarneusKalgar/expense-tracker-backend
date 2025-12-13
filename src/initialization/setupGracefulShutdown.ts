@@ -1,6 +1,6 @@
 import { Server } from "node:http";
 
-import { dataSource } from "@/initialization/db/data-source.js";
+import { dataSource } from "@/db/data-source.js";
 import { redisService } from "@/services/index.js";
 
 export const setupGracefulShutdown = (server: Server) => {

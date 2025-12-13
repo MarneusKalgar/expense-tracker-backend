@@ -1,4 +1,4 @@
-import { dataSource } from "./data-source.js";
+import { dataSource } from "../db/data-source.js";
 
 export const setupDb = async () => {
   try {

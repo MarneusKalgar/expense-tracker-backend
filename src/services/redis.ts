@@ -1,6 +1,5 @@
 import IORedis from "ioredis";
 
-// import { redisConfig } from "@/configs/index.js";
 import { env } from "@/configs/index.js";
 
 const Redis = IORedis.default;
@@ -9,13 +8,20 @@ class RedisService {
   get client() {
     return this._client;
   }
+
   private _client: IORedis.Redis;
   private isConnected = false;
   private readonly maxReconnectAttempts = 10;
-
   private reconnectAttempts = 0;
 
-  constructor() {
+  async disconnect() {
+    if (this._client) {
+      await this._client.quit();
+      console.log("✅ Redis disconnected gracefully");
+    }
+  }
+
+  initialize() {
     this._client = new Redis({
       db: 0,
       host: env.redis.host,
@@ -34,13 +40,6 @@ class RedisService {
     });
 
     this.setupEventHandlers();
-  }
-
-  async disconnect() {
-    if (this._client) {
-      await this._client.quit();
-      console.log("✅ Redis disconnected gracefully");
-    }
   }
 
   private setupEventHandlers() {

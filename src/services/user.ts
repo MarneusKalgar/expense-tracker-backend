@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 
 import { env } from "@/configs/index.js";
-import { User } from "@/entity/User.js";
-import { dataSource } from "@/initialization/db/data-source.js";
+import { dataSource } from "@/db/data-source.js";
+import { User } from "@/db/entity/index.js";
 import { SignupInput } from "@/types/index.js";
 import { BadRequestError } from "@/utils/index.js";
+
 class UserService {
   async createUser(userData: SignupInput) {
     const { email, firstName, lastName, password } = userData;

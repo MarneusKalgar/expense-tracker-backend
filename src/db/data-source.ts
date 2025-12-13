@@ -1,7 +1,8 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 
 import { env } from "@/configs/index.js";
-import { User } from "@/entity/index.js";
+
+import { User } from "./entity/index.js";
 
 const options: DataSourceOptions = {
   entities: [User],
