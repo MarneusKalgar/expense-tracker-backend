@@ -1,11 +1,13 @@
+import { logger } from "@/configs/index.js";
+
 import { dataSource } from "../db/data-source.js";
 
 export const setupDb = async () => {
   try {
     await dataSource.initialize();
-    console.log("Data Source has been initialized!");
+    logger.info("Data Source has been initialized!");
   } catch (err) {
-    console.error("Error during Data Source initialization:", err);
+    logger.error("Error during Data Source initialization:", err);
     throw err;
   }
 };

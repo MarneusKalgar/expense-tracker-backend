@@ -6,7 +6,8 @@ import { User } from "./entity/index.js";
 
 const options: DataSourceOptions = {
   entities: [User],
-  logging: false,
+  logger: env.nodeEnv === "development" ? "advanced-console" : "simple-console",
+  logging: env.nodeEnv === "development" ? ["query", "error", "schema", "warn"] : ["error", "warn"],
   migrations: [],
   poolSize: 5,
   ssl: {

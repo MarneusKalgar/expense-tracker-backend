@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const envSchema = z.object({
+  APP_LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).optional().default("info"),
   BCRYPT_SALT_ROUNDS: z.string().transform(Number).optional().default(10),
   DATABASE_URL: z.string().nonempty("DATABASE_URL is required"),
   JWT_ACCESS_EXPIRES_IN: z.string(),

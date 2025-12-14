@@ -3,6 +3,7 @@ import cors from "cors";
 import express, { Express } from "express";
 import httpContext from "express-http-context";
 
+import { logger } from "@/configs/index.js";
 import { router } from "@/routes/index.js";
 
 import { setupErrorHandlers } from "./setupErrorHandlers.js";
@@ -20,7 +21,7 @@ export const serverSetup = async (app: Express) => {
   setupErrorHandlers(app);
 
   const server = app.listen(process.env.PORT, () => {
-    console.log(`Server is listening on port ${process.env.PORT}`);
+    logger.info(`Server is listening on port ${process.env.PORT}`);
   });
 
   return server;

@@ -1,5 +1,6 @@
 import { Server } from "node:http";
 
+import { logger } from "@/configs/logger.js";
 import { dataSource } from "@/db/data-source.js";
 import { redisService } from "@/services/index.js";
 
@@ -20,38 +21,38 @@ export const setupGracefulShutdown = (server: Server) => {
 
   const shutdown = async (signal: string) => {
     if (isShuttingDown) {
-      console.log("Shutdown already in progress...");
+      logger.info("Shutdown already in progress...");
       return;
     }
 
     isShuttingDown = true;
-    console.log(`\n${signal} received. Starting graceful shutdown...`);
+    logger.info(`\n${signal} received. Starting graceful shutdown...`);
 
     const forceShutdownTimer = setTimeout(() => {
-      console.error("⚠️ Forced shutdown after timeout");
+      logger.error("Forced shutdown after timeout");
       process.exit(1);
     }, 30000);
 
     try {
       if (server.listening) {
         await closeServer();
-        console.log("✅ HTTP server closed (no new connections)");
+        logger.info("HTTP server closed (no new connections)");
       } else {
-        console.log("⚠️ HTTP server already closed");
+        logger.info("HTTP server already closed");
       }
 
       if (dataSource.isInitialized) {
         await dataSource.destroy();
-        console.log("✅ Database connection closed");
+        logger.info("Database connection closed");
       }
 
       await redisService.disconnect();
 
       clearTimeout(forceShutdownTimer);
-      console.log("✅ Graceful shutdown completed");
+      logger.info("Graceful shutdown completed");
       process.exit(0);
     } catch (error) {
-      console.error("Error during shutdown:", error);
+      logger.error("Error during shutdown:", error);
       clearTimeout(forceShutdownTimer);
       process.exit(1);
     }
@@ -61,12 +62,12 @@ export const setupGracefulShutdown = (server: Server) => {
   process.on("SIGINT", () => shutdown("SIGINT"));
 
   process.on("uncaughtException", error => {
-    console.error("Uncaught Exception:", error);
+    logger.error("Uncaught Exception:", error);
     shutdown("uncaughtException");
   });
 
   process.on("unhandledRejection", (reason, promise) => {
-    console.error("Unhandled Rejection at:", promise, "reason:", reason);
+    logger.error("Unhandled Rejection at:", promise, "reason:", reason);
     shutdown("unhandledRejection");
   });
 };
