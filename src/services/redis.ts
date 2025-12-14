@@ -9,6 +9,10 @@ class RedisService {
     return this._client;
   }
 
+  get connectionStatus() {
+    return this.isConnected && this._client.status === "ready";
+  }
+
   private _client: IORedis.Redis;
   private isConnected = false;
   private readonly maxReconnectAttempts = 10;
