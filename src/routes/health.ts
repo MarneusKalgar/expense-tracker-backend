@@ -1,0 +1,128 @@
+import express from "express";
+
+import { logger } from "@/configs/index.js";
+import { dataSource } from "@/db/data-source.js";
+import { redisService } from "@/services/redis.js";
+
+export const healthRouter = express.Router();
+
+type Errors = "connected" | "disconnected" | "unknown";
+interface Health {
+  services: Record<string, Errors>;
+  status: Statuses;
+  timestamp: string;
+  uptime: number;
+}
+type Statuses = "degraded" | "down" | "ok";
+
+healthRouter.get("/health", async (req, res) => {
+  const timeoutPromise = new Promise<Health>((_, reject) =>
+    setTimeout(() => reject(new Error("Health check timeout")), 5000),
+  );
+
+  const performHealthCheck = async (): Promise<Health> => {
+    const health: Health = {
+      services: {
+        database: "unknown" as Errors,
+        redis: "unknown" as Errors,
+      },
+      status: "ok" as Statuses,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    };
+
+    try {
+      if (dataSource.isInitialized) {
+        await dataSource.query("SELECT 1");
+        health.services.database = "connected";
+      } else {
+        health.services.database = "disconnected";
+      }
+      // eslint-disable-next-line
+    } catch (error) {
+      health.services.database = "disconnected";
+    }
+
+    try {
+      await redisService.client.ping();
+      health.services.redis = "connected";
+      // eslint-disable-next-line
+    } catch (error) {
+      health.services.redis = "disconnected";
+    }
+
+    const allConnected = Object.values(health.services).every(status => status === "connected");
+    const allDisconnected = Object.values(health.services).every(
+      status => status === "disconnected",
+    );
+
+    if (allDisconnected) {
+      health.status = "down";
+    } else if (!allConnected) {
+      health.status = "degraded";
+    }
+
+    return health;
+  };
+
+  try {
+    const result = await Promise.race([performHealthCheck(), timeoutPromise]);
+
+    const httpStatus = result.status === "ok" ? 200 : 503;
+    res.status(httpStatus).json(result);
+  } catch (error) {
+    logger.error("Health check failed:", error);
+    res.status(503).json({
+      error: true,
+      message: "Health check failed",
+    });
+  }
+});
+
+// Readiness probe - checks if app is ready to receive traffic
+healthRouter.get("/ready", async (req, res) => {
+  try {
+    const isDatabaseReady = dataSource.isInitialized;
+    let isRedisReady = false;
+
+    try {
+      await redisService.client.ping();
+      isRedisReady = true;
+    } catch {
+      isRedisReady = false;
+    }
+
+    const isReady = isDatabaseReady && isRedisReady;
+
+    if (isReady) {
+      res.status(200).json({
+        services: {
+          database: isDatabaseReady,
+          redis: isRedisReady,
+        },
+        status: "ok",
+      });
+    } else {
+      res.status(503).json({
+        services: {
+          database: isDatabaseReady,
+          redis: isRedisReady,
+        },
+        status: "down",
+      });
+    }
+  } catch (error) {
+    logger.error("Readiness check failed:", error);
+    res.status(503).json({
+      error: true,
+      message: "Readiness check failed",
+    });
+  }
+});
+
+healthRouter.get("/live", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+  });
+});

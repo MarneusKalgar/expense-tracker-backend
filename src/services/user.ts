@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 
-import { dataSource } from "@/data-source.js";
-import { User } from "@/entity/User.js";
+import { env } from "@/configs/index.js";
+import { dataSource } from "@/db/data-source.js";
+import { User } from "@/db/entity/index.js";
 import { SignupInput } from "@/types/index.js";
 import { BadRequestError } from "@/utils/index.js";
 
@@ -13,10 +14,7 @@ class UserService {
       throw new BadRequestError("Email is already in use");
     }
 
-    const hashedPassword = await bcrypt.hash(
-      password,
-      Number(process.env.BCRYPT_SALT_ROUNDS ?? "10") || 10,
-    );
+    const hashedPassword = await bcrypt.hash(password, env.bcrypt.saltRounds);
 
     const newUser = dataSource.getRepository(User).create({
       email,

@@ -1,6 +1,7 @@
 // import { logger } from '@/core/logger/logger.js';
 import { NextFunction, Request, Response } from "express";
 
+import { logger } from "@/configs/logger.js";
 import { BaseError } from "@/utils/index.js";
 
 export const errorLogger = (
@@ -14,7 +15,7 @@ export const errorLogger = (
   if (typeof errorLog === "function") {
     errorLog("HttpError", error);
   } else {
-    // logger.error('HttpError', error);
+    logger.error("HttpError", error);
   }
 
   next(error);

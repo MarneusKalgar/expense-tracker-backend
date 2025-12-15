@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
 
-import { redisClient } from "@/configs/index.js";
-import { tokenService, userService } from "@/services/index.js";
+import { redisService, tokenService, userService } from "@/services/index.js";
 import { LoginInput, SignupInput } from "@/types/index.js";
-import { AuthError } from "@/utils/index.js";
+import { AuthError, getDefaultHash } from "@/utils/index.js";
+
+const defaultHash = getDefaultHash();
 
 class AuthService {
   /**
@@ -16,14 +17,11 @@ class AuthService {
     const { email, password } = data;
 
     const user = await userService.getUserByEmailWithPassword(email);
-    if (!user) {
-      throw new AuthError("Invalid email");
-    }
-
-    const hashedPassword = user?.password ?? (await bcrypt.hash("dummy-password", 10));
+    const hashedPassword = user?.password ?? defaultHash;
     const isPasswordValid = await bcrypt.compare(password, hashedPassword);
-    if (!isPasswordValid) {
-      throw new AuthError("Invalid password");
+
+    if (!user || !isPasswordValid) {
+      throw new AuthError("Invalid credentials");
     }
 
     const payload = { email: user.email, userId: user.id };
@@ -46,7 +44,7 @@ class AuthService {
       return;
     }
 
-    const userId = await redisClient.get(`refreshToken:${refreshToken}`);
+    const userId = await redisService.client.get(`refreshToken:${refreshToken}`);
 
     if (userId) {
       await tokenService.revokeRefreshToken(refreshToken);
@@ -64,7 +62,7 @@ class AuthService {
       throw new AuthError("No refresh token provided");
     }
 
-    const userId = await redisClient.get(`refreshToken:${refreshToken}`);
+    const userId = await redisService.client.get(`refreshToken:${refreshToken}`);
     if (!userId) {
       throw new AuthError("Invalid refresh token");
     }

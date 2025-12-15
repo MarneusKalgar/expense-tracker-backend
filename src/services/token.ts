@@ -1,6 +1,7 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 
-import { env, redisClient } from "@/configs/index.js";
+import { env, logger } from "@/configs/index.js";
+import { redisService } from "@/services/index.js";
 import { AuthError } from "@/utils/index.js";
 
 interface JwtPayload {
@@ -49,9 +50,10 @@ class TokenService {
    */
   async revokeRefreshToken(token: string) {
     try {
-      await redisClient.del(`refreshToken:${token}`);
+      await redisService.client.del(`refreshToken:${token}`);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Failed to revoke refresh token: ${errorMessage}`);
       throw new Error(`Failed to revoke refresh token: ${errorMessage}`);
     }
   }
@@ -64,9 +66,10 @@ class TokenService {
    */
   async storeRefreshToken(token: string, userId: string) {
     try {
-      await redisClient.set(`refreshToken:${token}`, userId, "EX", env.redis.ttl);
+      await redisService.client.set(`refreshToken:${token}`, userId, "EX", env.redis.ttl);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Failed to store refresh token: ${errorMessage}`);
       throw new Error(`Failed to store refresh token: ${errorMessage}`);
     }
   }
@@ -80,10 +83,11 @@ class TokenService {
    */
   async validateRefreshToken(token: string, userId: string) {
     try {
-      const storedUserId = await redisClient.get(`refreshToken:${token}`);
+      const storedUserId = await redisService.client.get(`refreshToken:${token}`);
       return storedUserId === userId;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Failed to validate refresh token: ${errorMessage}`);
       throw new Error(`Failed to validate refresh token: ${errorMessage}`);
     }
   }
@@ -99,6 +103,7 @@ class TokenService {
       return jwt.verify(token, env.jwt.accessSecret) as JwtPayload;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Invalid or expired access token: ${errorMessage}`);
       throw new AuthError(`Invalid or expired access token: ${errorMessage}`);
     }
   }
@@ -114,6 +119,7 @@ class TokenService {
       return jwt.verify(token, env.jwt.refreshSecret) as JwtPayload;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      logger.error(`Invalid or expired refresh token: ${errorMessage}`);
       throw new AuthError(`Invalid or expired refresh token: ${errorMessage}`);
     }
   }

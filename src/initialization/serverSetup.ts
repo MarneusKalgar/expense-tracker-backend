@@ -3,6 +3,8 @@ import cors from "cors";
 import express, { Express } from "express";
 import httpContext from "express-http-context";
 
+import { logger } from "@/configs/index.js";
+import { healthRouter } from "@/routes/health.js";
 import { router } from "@/routes/index.js";
 
 import { setupErrorHandlers } from "./setupErrorHandlers.js";
@@ -15,11 +17,14 @@ export const serverSetup = async (app: Express) => {
   app.use(cors());
   app.use(httpContext.middleware);
 
+  app.use("/", healthRouter);
   app.use("/api/v1", router);
 
   setupErrorHandlers(app);
 
-  app.listen(process.env.PORT, () => {
-    console.log(`Server is listening on port ${process.env.PORT}`);
+  const server = app.listen(process.env.PORT, () => {
+    logger.info(`Server is listening on port ${process.env.PORT}`);
   });
+
+  return server;
 };
