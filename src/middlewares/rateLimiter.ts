@@ -1,6 +1,7 @@
 import { NextFunction, Response } from "express";
 
 import { logger } from "@/configs/index.js";
+import { DEFAULT_WINDOW_SECONDS } from "@/constants/index.js";
 import { redisService } from "@/services/index.js";
 import { RateLimitError } from "@/utils/index.js";
 
@@ -45,7 +46,7 @@ export const rateLimiter = (options: RateLimitOptions = {}) => {
     max = 100,
     message = "Too many requests, please try again later",
     skip = () => false,
-    windowMs = 900, // 15 minutes in seconds
+    windowMs = DEFAULT_WINDOW_SECONDS, // 15 minutes in seconds
   } = options;
 
   return async (req: RequestWithPayload, res: Response, next: NextFunction) => {

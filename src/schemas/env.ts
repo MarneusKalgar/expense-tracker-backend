@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const envSchema = z.object({
   APP_LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).optional().default("info"),
-  BCRYPT_SALT_ROUNDS: z.string().transform(Number).optional().default(10),
+  BCRYPT_SALT_ROUNDS: z.coerce.number().optional().default(10),
   DATABASE_URL: z.string().nonempty("DATABASE_URL is required"),
   JWT_ACCESS_EXPIRES_IN: z.string(),
   JWT_ACCESS_SECRET: z.string().min(32),
@@ -11,7 +11,7 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z
     .string()
-    .transform(val => parseInt(val))
+    .transform(val => parseInt(val, 10))
     .optional()
     .default(4000),
   REDIS_APP_KEY_TTL: z.string().transform(Number),
