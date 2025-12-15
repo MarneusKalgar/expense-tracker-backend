@@ -65,6 +65,13 @@ export class NotFoundError extends BaseError {
   }
 }
 
+export class RateLimitError extends BaseError {
+  constructor(message = "Too many requests", httpCode = HttpStatusCodes.TOO_MANY_REQUESTS) {
+    super(message, httpCode);
+    Error.captureStackTrace(this, RateLimitError);
+  }
+}
+
 export class UpdatedError extends BaseError {
   constructor(message = "Updated failed", httpCode = HttpStatusCodes.CONFLICT) {
     super(message, httpCode);
