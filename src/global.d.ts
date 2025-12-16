@@ -8,4 +8,8 @@ declare global {
       userId: string;
     };
   }
+
+  interface VersionedRequest extends Request {
+    apiVersion?: ApiVersion;
+  }
 }

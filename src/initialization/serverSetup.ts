@@ -1,11 +1,10 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Express } from "express";
-import httpContext from "express-http-context";
 
 import { logger } from "@/configs/index.js";
-import { healthRouter } from "@/routes/health.js";
-import { router } from "@/routes/index.js";
+import { apiVersion } from "@/middlewares/index.js";
+import { healthRouter, v1Router } from "@/routes/index.js";
 
 import { setupErrorHandlers } from "./setupErrorHandlers.js";
 
@@ -15,11 +14,10 @@ export const serverSetup = async (app: Express) => {
   app.use(cookieParser());
 
   app.use(cors());
-  app.use(httpContext.middleware);
 
   app.use("/", healthRouter);
-  app.use("/api/v1", router);
-
+  app.use(apiVersion);
+  app.use("/api/v1", v1Router);
   setupErrorHandlers(app);
 
   const server = app.listen(process.env.PORT, () => {
