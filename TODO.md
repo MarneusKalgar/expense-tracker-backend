@@ -1,13 +1,12 @@
 ## Config
 
-- Add environment check and validation
+- [x] Add environment check and validation
 - Configure CORS properly for production
-- Add logger
-- Add API versioning strategy
+- [x] Add logger
+- [x] Add API versioning strategy
 - Add Swagger/OpenAPI documentation
-- Implement graceful shutdown handling
-- Env variable validation
-- Redis Connection Error Handling
+- [x] Implement graceful shutdown handling
+- [x] Redis Connection Error Handling
 
 ## DB
 
@@ -25,8 +24,8 @@
 ## Additional
 
 - Add Request ID Middleware
-- Add Rate Limiting
-- Add Health Check Endpoint
+- [x] Add Rate Limiting
+- [x] Add Health Check Endpoint
 - Add unit and integration tests using Jest or Vitest
 - Containerize with Docker
 - Deploy to Netlify
