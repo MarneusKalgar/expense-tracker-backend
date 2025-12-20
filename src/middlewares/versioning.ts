@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ApiVersion, getApiVersion } from "@/utils/index.js";
+import { ApiVersion, ApiVersionError, getApiVersion } from "@/utils/index.js";
 
 /**
  * Middleware to detect and attach API version to request
@@ -23,12 +23,7 @@ export const requireVersion = (version: ApiVersion) => {
     const requestVersion = getApiVersion(req);
 
     if (requestVersion !== version) {
-      return res.status(400).json({
-        error: "Invalid API version",
-        message: `This endpoint requires API version ${version}`,
-        requestedVersion: requestVersion,
-        supportedVersions: Object.values(ApiVersion),
-      });
+      throw new ApiVersionError(`This endpoint requires API version ${version}`);
     }
 
     next();

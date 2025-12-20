@@ -30,14 +30,20 @@ export const getApiVersion = (req: Request): ApiVersion => {
 
   // 3. Check custom version header (e.g., X-API-Version: v1)
   const versionHeader = req.headers["x-api-version"] as string;
-  if (versionHeader && Object.values(ApiVersion).includes(versionHeader as ApiVersion)) {
-    return versionHeader as ApiVersion;
+  if (versionHeader) {
+    const normalizedHeader = versionHeader.toLowerCase();
+    if (Object.values(ApiVersion).includes(normalizedHeader as ApiVersion)) {
+      return normalizedHeader as ApiVersion;
+    }
   }
 
   // 4. Check query parameter (e.g., ?version=v1)
   const versionQuery = req.query.version as string;
-  if (versionQuery && Object.values(ApiVersion).includes(versionQuery as ApiVersion)) {
-    return versionQuery as ApiVersion;
+  if (versionQuery) {
+    const normalizedQuery = versionQuery.toLowerCase();
+    if (Object.values(ApiVersion).includes(normalizedQuery as ApiVersion)) {
+      return normalizedQuery as ApiVersion;
+    }
   }
 
   // Default to v1

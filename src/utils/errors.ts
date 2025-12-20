@@ -17,6 +17,14 @@ export class BaseError extends Error {
   }
 }
 
+export class ApiVersionError extends BaseError {
+  constructor(message = "API version error", httpCode = HttpStatusCodes.BAD_REQUEST) {
+    super(message, httpCode);
+
+    Error.captureStackTrace(this, ApiVersionError);
+  }
+}
+
 export class AuthError extends BaseError {
   constructor(message = "Not authorized", httpCode = HttpStatusCodes.UNAUTHORIZED) {
     super(message, httpCode);

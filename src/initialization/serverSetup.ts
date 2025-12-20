@@ -16,7 +16,7 @@ export const serverSetup = async (app: Express) => {
   app.use(cors());
 
   app.use("/", healthRouter);
-  app.use(apiVersion);
+  app.use("/api", apiVersion);
   app.use("/api/v1", v1Router);
   setupErrorHandlers(app);
 
