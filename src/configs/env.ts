@@ -42,6 +42,7 @@ export const getEnv = () => {
       ttl: parsedEnv.REDIS_APP_KEY_TTL,
       user: parsedEnv.REDIS_CLOUD_USER,
     },
+    serverUrl: parsedEnv.SERVER_URL,
   } as const;
 };
 

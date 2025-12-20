@@ -19,6 +19,7 @@ export const envSchema = z.object({
   REDIS_CLOUD_PASSWORD: z.string(),
   REDIS_CLOUD_PORT: z.string().transform(Number),
   REDIS_CLOUD_USER: z.string().nonempty("REDIS_CLOUD_USER is required"),
+  SERVER_URL: z.url("SERVER_URL must be a valid URL"),
 });
 
 export type Environment = z.infer<typeof envSchema>;
