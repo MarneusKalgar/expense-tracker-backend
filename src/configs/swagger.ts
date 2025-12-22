@@ -3,7 +3,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import { env } from "@/configs/index.js";
 
 const options: swaggerJsdoc.Options = {
-  apis: ["./src/routes/*.ts"],
+  apis: ["./src/docs/output/**/*.yaml"],
   definition: {
     info: {
       description: "API documentation for Expense Tracker application",

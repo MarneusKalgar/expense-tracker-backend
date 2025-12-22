@@ -13,7 +13,9 @@
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docs:dev": "npx tsp compile ./src/docs/schemas/main.tsp --watch",
+    "docs:build": "npx tsp compile ./src/docs/schemas/main.tsp"
   },
   "keywords": [],
   "author": "Ihor Chernobai",
@@ -46,6 +48,11 @@
     "@types/node": "^24.10.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@typespec/compiler": "^1.7.1",
+    "@typespec/http": "^1.7.0",
+    "@typespec/openapi": "^1.7.0",
+    "@typespec/openapi3": "^1.7.0",
+    "@typespec/rest": "^0.77.0",
     "eslint": "^9.39.1",
     "eslint-plugin-perfectionist": "^4.15.1",
     "husky": "^9.1.7",
