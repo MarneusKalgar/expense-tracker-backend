@@ -1,16 +1,19 @@
 import swaggerJsdoc from "swagger-jsdoc";
 
 import { env } from "@/configs/index.js";
+import { resolveFilePath } from "@/utils/index.js";
+
+const docsPath = resolveFilePath("../docs/output/**/*.yaml");
 
 const options: swaggerJsdoc.Options = {
-  apis: ["./src/docs/output/**/*.yaml"],
+  apis: [docsPath],
   definition: {
     info: {
       description: "API documentation for Expense Tracker application",
       title: "Expense Tracker API",
       version: "1.0.0",
     },
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     servers: [
       {
         description: "Development server",

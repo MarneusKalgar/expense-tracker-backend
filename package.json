@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node --env-file .env.development dist/index.js ",
     "start:dev": "tsx --watch --env-file .env.development src/index.ts",
-    "build": "tsc",
+    "build": "npm run docs:build && tsc && npm run docs:copy",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "docs:dev": "npx tsp compile ./src/docs/schemas/main.tsp --watch",
-    "docs:build": "npx tsp compile ./src/docs/schemas/main.tsp"
+    "docs:build": "npx tsp compile ./src/docs/schemas/main.tsp",
+    "docs:copy": "cp -r ./src/docs/output ./dist/docs/"
   },
   "keywords": [],
   "author": "Ihor Chernobai",
@@ -53,6 +54,7 @@
     "@typespec/openapi": "^1.7.0",
     "@typespec/openapi3": "^1.7.0",
     "@typespec/rest": "^0.77.0",
+    "@typespec/versioning": "^0.77.0",
     "eslint": "^9.39.1",
     "eslint-plugin-perfectionist": "^4.15.1",
     "husky": "^9.1.7",
