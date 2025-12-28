@@ -6,19 +6,10 @@ import "./models.tsp";
 using Http;
 using Versioning;
 
-@service(#{
-  title: "Authentication"
-})
-
 @versioned(Versions)
 
-namespace Authentication;
-
-enum Versions {
-  v1: "1.0",
-  v2: "2.0",
-}
-
+@route("/api/v1/auth")
+namespace ExpenseTrackerAPI.Authentication;
 
 @route("/signup")
 @tag("Authentication")

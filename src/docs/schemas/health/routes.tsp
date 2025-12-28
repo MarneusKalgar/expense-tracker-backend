@@ -4,11 +4,7 @@ import "./models.tsp";
 
 using Http;
 
-@service(#{
-  title: "Health"
-})
-
-namespace HealthChecking;
+namespace ExpenseTrackerAPI.HealthChecking;
 
 @route("/health")
 @tag("Health")

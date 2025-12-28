@@ -65,46 +65,6 @@ model LogoutResponse {
   };
 }
 
-// Error response models
-// @error
-// model BadRequestError {
-//   code: "BAD_REQUEST";
-//   message: string;
-// }
-
-// @error
-// model UnauthorizedError {
-//   code: "UNAUTHORIZED";
-//   message: string;
-// }
-
-// @error
-// model ConflictError {
-//   code: "CONFLICT";
-//   message: string;
-// }
-
-// @error
-// model InternalServerError {
-//   code: "INTERNAL_SERVER_ERROR";
-//   message: string;
-// }
-
-// model BadRequestResponse {
-//   @statusCode statusCode: 400;
-//   @body error: BadRequestError;
-// }
-
-// model UnauthorizedResponse {
-//   @statusCode statusCode: 401;
-//   @body error: UnauthorizedError;
-// }
-
-// model ConflictResponse {
-//   @statusCode statusCode: 409;
-//   @body error: ConflictError;
-// }
-
 model InternalServerErrorResponse {
   @statusCode statusCode: 500;
   @body error: InternalServerError;

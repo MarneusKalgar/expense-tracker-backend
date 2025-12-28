@@ -2,15 +2,14 @@ import "@typespec/http";
 import "@typespec/versioning";
 
 import "./health/routes.tsp";
-import "./auth/routes.tsp";
+import "./v1/auth/routes.tsp";
 
 using Http;
 using Versioning;
-
 @service(#{
   title: "Expense Tracker API",
 })
-//@server("test", "Single server endpoint")
+@server("http://localhost:3000", "Dev Server")
 @versioned(Versions)
 
 namespace ExpenseTrackerAPI;
