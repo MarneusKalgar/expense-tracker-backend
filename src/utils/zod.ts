@@ -8,7 +8,7 @@ import z from "zod";
  * @param {string} fallback - Fallback message if no issues are found
  * @returns {string} Formatted error string with field paths and messages
  * @example
- * const zodError = userSchema.parse(invalidData);
+ * const zodError = userSchema.safeParse(invalidData);
  * const errorMsg = extractZodErrors(zodError, "Validation failed");
  * // Returns: "Field: email, Error: Invalid email, Field: age, Error: Must be positive"
  */

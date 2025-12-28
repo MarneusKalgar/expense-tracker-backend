@@ -23,5 +23,6 @@ export const getVersionFromFilename = (file: string): string => {
  */
 export const getFileNameFromUrl = (url: string): string => {
   const parts = url.split("/");
-  return parts[parts.length - 1]!;
+  const filename = parts[parts.length - 1];
+  return filename ?? "";
 };

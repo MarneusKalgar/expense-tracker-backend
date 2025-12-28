@@ -4,15 +4,15 @@ import { logger } from "@/configs/index.js";
 import { dataSource } from "@/db/data-source.js";
 import { redisService } from "@/services/redis.js";
 
-type Errors = "connected" | "disconnected" | "unknown";
 interface Health {
-  services: Record<string, Errors>;
-  status: Statuses;
+  services: Record<string, ServiceStatus>;
+  status: OverallStatus;
   timestamp: string;
   uptime: number;
 }
+type OverallStatus = "degraded" | "down" | "ok";
 
-type Statuses = "degraded" | "down" | "ok";
+type ServiceStatus = "connected" | "disconnected" | "unknown";
 
 /**
  * Health check endpoint - returns overall system health
@@ -25,10 +25,10 @@ export const healthCheck = async (req: Request, res: Response) => {
   const performHealthCheck = async (): Promise<Health> => {
     const health: Health = {
       services: {
-        database: "unknown" as Errors,
-        redis: "unknown" as Errors,
+        database: "unknown" as ServiceStatus,
+        redis: "unknown" as ServiceStatus,
       },
-      status: "ok" as Statuses,
+      status: "ok" as OverallStatus,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
     };

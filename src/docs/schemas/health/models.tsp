@@ -3,7 +3,7 @@ import "@typespec/http";
 using Http;
 
 @doc("Service connection status")
-enum Error {
+enum ServiceStatus {
   @doc("Service is connected and operational")
   Connected: "connected",
   @doc("Service is disconnected")
@@ -13,7 +13,7 @@ enum Error {
 }
 
 @doc("Overall system health status")
-enum Status {
+enum OverallStatus {
   @doc("Service is operational but with degraded performance")
   Degraded: "degraded",
   @doc("Service is not operational")
@@ -25,9 +25,9 @@ enum Status {
 @doc("External service connection statuses")
 model Service {
   @doc("Database connection status")
-  database: Error,
+  database: ServiceStatus,
   @doc("Redis connection status")
-  redis: Error,
+  redis: ServiceStatus,
 }
 
 @doc("Comprehensive health check response with service statuses")
@@ -35,7 +35,7 @@ model HealthCheck {
   @doc("Status of external services")
   services: Service;
   @doc("Overall system health status")
-  status: Status;
+  status: OverallStatus;
   @doc("ISO 8601 timestamp of the health check")
   @example("2025-12-28T10:30:00.000Z")
   timestamp: string;
@@ -49,7 +49,7 @@ model ReadinessCheck {
   @doc("Status of external services")
   services: Service;
   @doc("Overall readiness status")
-  status: Status;
+  status: OverallStatus;
 }
 
 @doc("Liveness check response indicating if the service is running")

@@ -82,7 +82,8 @@ export const getSwaggerSpecs = (): SwaggerUrl[] => {
           version: parseFloat(version),
         };
       })
-      .sort((a, b) => b.version - a.version);
+      .sort((a, b) => b.version - a.version)
+      .map(({ name, url }) => ({ name, url }));
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     logger.error(`Error reading Swagger spec files: ${errorMessage}`);
