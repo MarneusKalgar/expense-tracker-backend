@@ -51,7 +51,15 @@ export const getApiVersion = (req: Request): ApiVersion => {
 };
 
 /**
- * Check if request is for a specific API version
+ * Check if request is for a specific API version.
+ *
+ * @param {Request} req - Express request object
+ * @param {ApiVersion} version - The API version to check against
+ * @returns {boolean} True if the request is for the specified version
+ * @example
+ * if (isApiVersion(req, ApiVersion.V2)) {
+ *   // Handle v2-specific logic
+ * }
  */
 export const isApiVersion = (req: Request, version: ApiVersion): boolean => {
   return getApiVersion(req) === version;

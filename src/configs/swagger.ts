@@ -6,7 +6,6 @@ import { SwaggerSpec, swaggerSpecSchema } from "@/schemas/index.js";
 import {
   extractZodErrors,
   getFileContent,
-  getFileNameFromUrl,
   getVersionFromFilename,
   NotFoundError,
   resolveFilePath,
@@ -55,12 +54,14 @@ const getYamlFiles = (): string[] => {
       logger.warn(`Docs directory not found: ${docsDir}`);
       return [];
     }
+
     return fs
       .readdirSync(docsDir)
       .filter(file => file.endsWith(".yaml") && file.startsWith("openapi."));
   } catch (error) {
-    logger.error("Error reading docs directory:", error);
-    return [];
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    logger.error(`Error reading docs directory: ${errorMessage}`);
+    throw new NotFoundError(`Error reading docs directory: ${errorMessage}`);
   }
 };
 
@@ -78,22 +79,21 @@ export const getSwaggerSpecs = (): SwaggerUrl[] => {
         return {
           name: `Expense Tracker API v${version}`,
           url: `/api-specs/${file}`,
+          version: parseFloat(version),
         };
       })
-      .sort((a, b) => {
-        const versionA = parseFloat(getVersionFromFilename(getFileNameFromUrl(a.url)));
-        const versionB = parseFloat(getVersionFromFilename(getFileNameFromUrl(b.url)));
-        return versionA - versionB;
-      });
+      .sort((a, b) => b.version - a.version);
   } catch (error) {
-    logger.error("Error reading Swagger spec files:", error);
-    return [];
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    logger.error(`Error reading Swagger spec files: ${errorMessage}`);
+    throw new NotFoundError(`Error reading Swagger spec files: ${errorMessage}`);
   }
 };
 
-export const getCachedSpec = (filename: string) => {
+export const getCachedSpec = (filename: string): SwaggerSpec => {
   const spec = specsCache.get(filename);
   if (!spec) {
+    logger.error(`Spec file ${filename} not found in cache`);
     throw new NotFoundError(`Spec file ${filename} not found in cache`);
   }
   return spec;

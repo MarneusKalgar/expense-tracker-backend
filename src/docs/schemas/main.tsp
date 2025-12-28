@@ -6,6 +6,8 @@ import "./v1/auth/routes.tsp";
 
 using Http;
 using Versioning;
+
+@doc("Expense Tracker API - Manage your personal expenses with ease")
 @service(#{
   title: "Expense Tracker API",
 })
@@ -14,7 +16,10 @@ using Versioning;
 
 namespace ExpenseTrackerAPI;
 
+@doc("Available API versions")
 enum Versions {
+  @doc("Version 1.0")
   v1: "1.0",
+  @doc("Version 2.0")
   v2: "2.0",
 }
