@@ -31,3 +31,6 @@ jobs:
 
       - name: Format with Prettier
         run: npm run format
+
+      - name: Generate API documentation
+        run: npm run docs:build

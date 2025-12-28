@@ -7,6 +7,7 @@ import { apiVersion } from "@/middlewares/index.js";
 import { healthRouter, v1Router } from "@/routes/index.js";
 
 import { setupErrorHandlers } from "./setupErrorHandlers.js";
+import { setupSwagger } from "./setupSwagger.js";
 
 export const serverSetup = async (app: Express) => {
   app.use(express.json({ limit: "10mb" }));
@@ -18,6 +19,8 @@ export const serverSetup = async (app: Express) => {
   app.use("/", healthRouter);
   app.use("/api", apiVersion);
   app.use("/api/v1", v1Router);
+
+  setupSwagger(app);
   setupErrorHandlers(app);
 
   const server = app.listen(process.env.PORT, () => {

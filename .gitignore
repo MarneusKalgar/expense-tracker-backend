@@ -19,3 +19,6 @@
 logs/
 *.log
 npm-debug.log*
+
+# Generated API documentation
+/src/docs/output/

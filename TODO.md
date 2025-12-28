@@ -29,3 +29,4 @@
 - Add unit and integration tests using Jest or Vitest
 - Containerize with Docker
 - Deploy to Netlify
+- Cron Jobs
