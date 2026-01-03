@@ -2,10 +2,10 @@ import { DataSource, DataSourceOptions } from "typeorm";
 
 import { env } from "@/configs/index.js";
 
-import { User } from "./entity/index.js";
+import { Account, Category, Currency, Transaction, User } from "./entity/index.js";
 
 const options: DataSourceOptions = {
-  entities: [User],
+  entities: [User, Account, Category, Currency, Transaction],
   logger: env.nodeEnv === "development" ? "advanced-console" : "simple-console",
   logging: env.nodeEnv === "development" ? ["query", "error", "schema", "warn"] : ["error", "warn"],
   migrations: [],

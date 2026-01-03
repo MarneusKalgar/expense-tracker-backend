@@ -1,14 +1,14 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { tokenService } from "@/services/index.js";
 import { AuthError } from "@/utils/index.js";
 
-export const authenticate = async (req: RequestWithPayload, res: Response, next: NextFunction) => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader?.startsWith("Bearer ")) {
-      throw new AuthError("No token provided");
+      throw new AuthError("User is not authenticated");
     }
 
     const token = authHeader.split(" ")[1];
