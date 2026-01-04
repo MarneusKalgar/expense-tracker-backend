@@ -8,7 +8,7 @@ import {
   updateTransaction,
 } from "@/controllers/index.js";
 import { asyncWrapper, authenticate, validateRequestBody } from "@/middlewares/index.js";
-import { createTransactionSchema, updateTransactionSchema } from "@/schemas/index.js";
+import { createTransactionSchema, paramsSchema, updateTransactionSchema } from "@/schemas/index.js";
 
 export const transactionRouter = express.Router();
 
@@ -23,7 +23,8 @@ transactionRouter.post(
 transactionRouter.put(
   "/:id",
   authenticate,
-  validateRequestBody(updateTransactionSchema),
+  validateRequestBody(paramsSchema, "params"),
+  validateRequestBody(updateTransactionSchema, "body"),
   asyncWrapper(updateTransaction),
 );
 transactionRouter.delete("/:id", authenticate, asyncWrapper(deleteTransaction));

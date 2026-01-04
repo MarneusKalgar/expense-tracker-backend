@@ -3,6 +3,7 @@ import "@typespec/versioning";
 
 import "./health/routes.tsp";
 import "./v1/auth/routes.tsp";
+import "./v1/transaction/routes.tsp";
 
 using Http;
 using Versioning;

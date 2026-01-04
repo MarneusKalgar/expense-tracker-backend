@@ -65,8 +65,8 @@ class TransactionService {
   ) {
     const { accountId, amount, categoryId, date, name } = transactionData;
     const repository = dataSource.getRepository(Transaction);
-    const query = repository.findOneBy({ id: transactionId, userId });
-    const transaction = await query;
+    const transaction = await repository.findOneBy({ id: transactionId, userId });
+
     if (!transaction) {
       throw new UpdatedError("Transaction not found");
     }
@@ -79,7 +79,7 @@ class TransactionService {
       ...(name && { name }),
     });
 
-    const updatedTransaction = await query;
+    const updatedTransaction = await repository.findOneBy({ id: transactionId, userId });
     return updatedTransaction;
   }
 }
