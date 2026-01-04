@@ -12,7 +12,7 @@ const messagePrefixMap: Record<RequestFields, string> = {
   query: "Invalid query parameters",
 };
 
-export const validateRequestBody = (schema: ZodType, field: RequestFields = "body") => {
+export const validateRequest = (schema: ZodType, field: RequestFields = "body") => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = schema.safeParse(req[field]);
@@ -28,3 +28,7 @@ export const validateRequestBody = (schema: ZodType, field: RequestFields = "bod
     }
   };
 };
+
+export const validateRequestBody = (schema: ZodType) => validateRequest(schema, "body");
+export const validateRequestParams = (schema: ZodType) => validateRequest(schema, "params");
+export const validateRequestQuery = (schema: ZodType) => validateRequest(schema, "query");

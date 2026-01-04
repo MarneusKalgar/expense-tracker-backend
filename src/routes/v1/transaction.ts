@@ -7,13 +7,23 @@ import {
   getTransaction,
   updateTransaction,
 } from "@/controllers/index.js";
-import { asyncWrapper, authenticate, validateRequestBody } from "@/middlewares/index.js";
+import {
+  asyncWrapper,
+  authenticate,
+  validateRequestBody,
+  validateRequestParams,
+} from "@/middlewares/index.js";
 import { createTransactionSchema, paramsSchema, updateTransactionSchema } from "@/schemas/index.js";
 
 export const transactionRouter = express.Router();
 
 transactionRouter.get("/", authenticate, asyncWrapper(getAllTransactions));
-transactionRouter.get("/:id", authenticate, asyncWrapper(getTransaction));
+transactionRouter.get(
+  "/:id",
+  authenticate,
+  validateRequestParams(paramsSchema),
+  asyncWrapper(getTransaction),
+);
 transactionRouter.post(
   "/",
   authenticate,
@@ -23,8 +33,13 @@ transactionRouter.post(
 transactionRouter.put(
   "/:id",
   authenticate,
-  validateRequestBody(paramsSchema, "params"),
-  validateRequestBody(updateTransactionSchema, "body"),
+  validateRequestParams(paramsSchema),
+  validateRequestBody(updateTransactionSchema),
   asyncWrapper(updateTransaction),
 );
-transactionRouter.delete("/:id", authenticate, asyncWrapper(deleteTransaction));
+transactionRouter.delete(
+  "/:id",
+  authenticate,
+  validateRequestParams(paramsSchema),
+  asyncWrapper(deleteTransaction),
+);
