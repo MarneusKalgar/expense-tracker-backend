@@ -1,7 +1,16 @@
 import { dataSource } from "@/db/data-source.js";
 import { Transaction } from "@/db/entity/index.js";
 import { CreateTransactionInput, UpdateTransactionInput } from "@/schemas/index.js";
-import { UpdatedError } from "@/utils/index.js";
+import { getPagination, UpdatedError } from "@/utils/index.js";
+
+interface Filters {
+  accountId?: string;
+  categoryId?: string;
+  currencyId?: string;
+  page?: number;
+  perPage?: number;
+  search?: string;
+}
 
 class TransactionService {
   async createTransaction(userId: string, transactionData: CreateTransactionInput) {
@@ -25,20 +34,54 @@ class TransactionService {
     await repository.softDelete(transactionId);
   }
 
-  async getAllTransactions(userId: string) {
+  async getAllTransactions(userId: string, filters: Filters) {
     const repository = dataSource.getRepository(Transaction);
-    const transactions = await repository.find({
-      relations: {
-        account: true,
-        category: true,
-      },
-      select: {
-        account: { id: true, name: true },
-        category: { id: true, name: true },
-      },
-      where: { userId },
-    });
-    return transactions;
+    const { accountId, categoryId, currencyId, page, perPage, search } = filters;
+
+    const queryBuilder = repository
+      .createQueryBuilder("transaction")
+      .leftJoinAndSelect("transaction.account", "account")
+      .leftJoinAndSelect("transaction.category", "category")
+      .leftJoinAndSelect("account.currency", "currency")
+      .where("transaction.userId = :userId", { userId })
+      .select([
+        "transaction",
+        "account.id",
+        "account.name",
+        "category.id",
+        "category.name",
+        "currency.id",
+        "currency.name",
+      ])
+      .orderBy("transaction.date", "DESC");
+
+    if (search) {
+      queryBuilder.andWhere("transaction.name ILIKE :search", { search: `%${search}%` });
+    }
+
+    if (categoryId) {
+      queryBuilder.andWhere("transaction.categoryId = :categoryId", { categoryId });
+    }
+
+    if (currencyId) {
+      queryBuilder.andWhere("account.currencyId = :currencyId", { currencyId });
+    }
+
+    if (accountId) {
+      queryBuilder.andWhere("transaction.accountId = :accountId", { accountId });
+    }
+
+    const { currentPage, limit, offset } = getPagination({ page, perPage });
+    queryBuilder.skip(offset).take(limit);
+
+    const [transactions, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      currentPage: currentPage,
+      perPage: limit,
+      total,
+      transactions,
+    };
   }
 
   async getTransaction(transactionId: string, userId: string) {

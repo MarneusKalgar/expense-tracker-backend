@@ -18,7 +18,20 @@ namespace ExpenseTrackerAPI.Transactions;
 @added(Versions.v1)
 @useAuth(BearerAuth)
 @get
-op getAllTransactions():
+op getAllTransactions(
+  @doc("Search term to filter transactions by name")
+  @query search?: string,
+  @doc("Filter by category UUID")
+  @query categoryId?: string,
+  @doc("Filter by currency UUID")
+  @query currencyId?: string,
+  @doc("Filter by account UUID")
+  @query accountId?: string,
+  @doc("Page number for pagination")
+  @query page?: int32,
+  @doc("Number of items per page")
+  @query perPage?: int32
+):
   | GetAllTransactionsResponse
   | UnauthorizedResponse
   | InternalServerErrorResponse;

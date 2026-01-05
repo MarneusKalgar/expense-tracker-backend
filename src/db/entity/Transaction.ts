@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -18,12 +19,16 @@ export enum TransactionType {
 }
 
 @Entity()
+@Index(["userId", "date"])
+@Index(["userId", "accountId"])
+@Index(["userId", "categoryId"])
 export class Transaction {
   @JoinColumn({ name: "account_id" })
   @ManyToOne(() => Account, account => account.transactions, { nullable: false })
   account: Account;
 
   @Column({ name: "account_id", type: "uuid" })
+  @Index()
   accountId: string;
 
   @Column({
@@ -39,6 +44,7 @@ export class Transaction {
   category: Category;
 
   @Column({ name: "category_id", type: "uuid" })
+  @Index()
   categoryId: string;
 
   @CreateDateColumn()
@@ -75,5 +81,6 @@ export class Transaction {
   user: User;
 
   @Column({ name: "user_id", type: "uuid" })
+  @Index()
   userId: string;
 }

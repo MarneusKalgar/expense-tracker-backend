@@ -65,6 +65,8 @@ model AccountInfo {
   @doc("Account name")
   @example("Main Checking")
   name: string;
+  @doc("Associated currency information")
+  currency: CurrencyInfo;
 }
 
 @doc("Category information")
@@ -74,6 +76,16 @@ model CategoryInfo {
   id: string;
   @doc("Category name")
   @example("Groceries")
+  name: string;
+}
+
+@doc("Currency information")
+model CurrencyInfo {
+  @doc("Currency UUID")
+  @example("770e8400-e29b-41d4-a716-446655440003")
+  id: string;
+  @doc("Currency name")
+  @example("USD")
   name: string;
 }
 
@@ -133,6 +145,15 @@ model GetAllTransactionsResponse {
     message: "Fetched all transactions";
     @doc("Array of transaction data")
     data: TransactionData[];
+    @doc("Current page number")
+    @example(1)
+    page: int32;
+    @doc("Number of items per page")
+    @example(10)
+    perPage: int32;
+    @doc("Total number of transactions")
+    @example(100)
+    total: int32;
   };
 }
 
