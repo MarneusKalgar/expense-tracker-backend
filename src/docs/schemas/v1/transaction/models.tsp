@@ -114,13 +114,6 @@ model TransactionData {
   updatedAt: utcDateTime;
 }
 
-@doc("Transaction creation response data")
-model CreateTransactionData {
-  @doc("UUID of the newly created transaction")
-  @example("770e8400-e29b-41d4-a716-446655440002")
-  transactionId: string;
-}
-
 // Success response models
 @doc("Successful transaction retrieval response (200)")
 model GetTransactionResponse {
@@ -166,7 +159,7 @@ model CreateTransactionResponse {
     @doc("Success message")
     message: "Transaction created successfully";
     @doc("Created transaction data")
-    data: CreateTransactionData;
+    data: TransactionData;
   };
 }
 

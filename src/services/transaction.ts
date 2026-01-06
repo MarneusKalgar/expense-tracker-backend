@@ -1,7 +1,7 @@
 import { dataSource } from "@/db/data-source.js";
 import { Transaction } from "@/db/entity/index.js";
 import { CreateTransactionInput, UpdateTransactionInput } from "@/schemas/index.js";
-import { getPagination, UpdatedError } from "@/utils/index.js";
+import { getPagination, NotFoundError, removeNullish, UpdatedError } from "@/utils/index.js";
 
 interface Filters {
   accountId?: string;
@@ -26,7 +26,7 @@ class TransactionService {
       userId,
     });
     await repository.save(newTransaction);
-    return newTransaction.id;
+    return newTransaction;
   }
 
   async deleteTransaction(transactionId: string) {
@@ -98,6 +98,10 @@ class TransactionService {
       where: { id: transactionId, userId },
     });
 
+    if (!transaction) {
+      throw new NotFoundError("Transaction not found");
+    }
+
     return transaction;
   }
 
@@ -114,13 +118,17 @@ class TransactionService {
       throw new UpdatedError("Transaction not found");
     }
 
-    await repository.update(transactionId, {
-      ...(accountId && { accountId }),
-      ...(amount && { amount }),
-      ...(categoryId && { categoryId }),
-      ...(date && { date }),
-      ...(name && { name }),
+    const paramsToUpdate = removeNullish({
+      accountId,
+      amount,
+      categoryId,
+      date,
+      name,
     });
+
+    console.log("Params to update:", paramsToUpdate);
+
+    await repository.update(transactionId, paramsToUpdate);
 
     const updatedTransaction = await repository.findOneBy({ id: transactionId, userId });
     return updatedTransaction;

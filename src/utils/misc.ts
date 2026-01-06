@@ -37,3 +37,9 @@ export const getFileContent = (
   const content = fs.readFileSync(fullPath, encoding);
   return content;
 };
+
+export function removeNullish<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, value]) => value !== null && value !== undefined),
+  ) as Partial<T>;
+}

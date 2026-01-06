@@ -8,7 +8,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const authHeader = req.headers.authorization;
 
     if (!authHeader?.startsWith("Bearer ")) {
-      throw new AuthError("User is not authenticated");
+      throw new AuthError("No token provided");
     }
 
     const token = authHeader.split(" ")[1];
