@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
+import { LoginInput, SignupInput } from "@/schemas/index.js";
 import { redisService, tokenService, userService } from "@/services/index.js";
-import { LoginInput, SignupInput } from "@/types/index.js";
 import { AuthError, getDefaultHash } from "@/utils/index.js";
 
 const defaultHash = getDefaultHash();

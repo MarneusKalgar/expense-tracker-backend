@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { logger } from "@/configs/index.js";
 import { DEFAULT_WINDOW_SECONDS } from "@/constants/index.js";
@@ -9,7 +9,7 @@ interface RateLimitOptions {
   /**
    * Optional custom key generator function
    */
-  keyGenerator?: (req: RequestWithPayload) => string;
+  keyGenerator?: (req: Request) => string;
   /**
    * Optional key prefix for Redis storage
    * @default "ratelimit"
@@ -27,7 +27,7 @@ interface RateLimitOptions {
   /**
    * Skip rate limiting based on request
    */
-  skip?: (req: RequestWithPayload) => boolean;
+  skip?: (req: Request) => boolean;
   /**
    * Time window in seconds
    * @default 900 (15 minutes)
@@ -37,7 +37,7 @@ interface RateLimitOptions {
 
 export const rateLimiter = (options: RateLimitOptions = {}) => {
   const {
-    keyGenerator = (req: RequestWithPayload) => {
+    keyGenerator = (req: Request) => {
       const ip = req.ip ?? req.socket.remoteAddress ?? "unknown";
       const userId = req.user?.userId ?? "anonymous";
       return `${userId}:${ip}`;
@@ -49,7 +49,7 @@ export const rateLimiter = (options: RateLimitOptions = {}) => {
     windowMs = DEFAULT_WINDOW_SECONDS, // 15 minutes in seconds
   } = options;
 
-  return async (req: RequestWithPayload, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Skip rate limiting if skip function returns true
       if (skip(req)) {

@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { env } from "@/configs/index.js";
 import { HttpStatusCodes, HttpStatusMessages } from "@/constants/index.js";
@@ -14,7 +14,7 @@ interface ErrorResponse {
 
 export const errorResponder = (
   error: BaseError,
-  req: RequestWithPayload,
+  req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,

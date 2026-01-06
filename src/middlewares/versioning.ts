@@ -6,7 +6,7 @@ import { ApiVersion, ApiVersionError, getApiVersion } from "@/utils/index.js";
  * Middleware to detect and attach API version to request
  */
 export const apiVersion = (req: Request, res: Response, next: NextFunction) => {
-  const versionedReq = req as VersionedRequest;
+  const versionedReq = req;
   versionedReq.apiVersion = getApiVersion(req);
 
   // Add version to response headers for transparency

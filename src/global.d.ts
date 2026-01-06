@@ -1,15 +1,15 @@
-import { Request } from "express";
+// to make the file a module and avoid the TypeScript error
+export {};
 
 declare global {
-  interface RequestWithPayload extends Request {
-    id?: string;
-    user?: {
-      email: string;
-      userId: string;
-    };
-  }
-
-  interface VersionedRequest extends Request {
-    apiVersion?: ApiVersion;
+  namespace Express {
+    export interface Request {
+      apiVersion?: ApiVersion;
+      id?: string;
+      user?: {
+        email: string;
+        userId: string;
+      };
+    }
   }
 }

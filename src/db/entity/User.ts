@@ -3,14 +3,23 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
+import { Account, Currency, Transaction } from "./index.js";
+
 @Entity()
 export class User {
+  @OneToMany(() => Account, account => account.user)
+  accounts: Account[];
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(() => Currency, currency => currency.user)
+  currencies: Currency[];
 
   @DeleteDateColumn()
   deletedDate: Date;
@@ -42,6 +51,9 @@ export class User {
     type: "varchar",
   })
   password: string;
+
+  @OneToMany(() => Transaction, transaction => transaction.user)
+  transactions: Transaction[];
 
   @UpdateDateColumn()
   updatedAt: Date;
