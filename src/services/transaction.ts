@@ -1,7 +1,7 @@
 import { dataSource } from "@/db/data-source.js";
 import { Transaction } from "@/db/entity/index.js";
 import { CreateTransactionInput, UpdateTransactionInput } from "@/schemas/index.js";
-import { getPagination, NotFoundError, removeNullish, UpdatedError } from "@/utils/index.js";
+import { getPagination, NotFoundError, removeNullish } from "@/utils/index.js";
 
 interface Filters {
   accountId?: string;
@@ -115,7 +115,7 @@ class TransactionService {
     const transaction = await repository.findOneBy({ id: transactionId, userId });
 
     if (!transaction) {
-      throw new UpdatedError("Transaction not found");
+      throw new NotFoundError("Transaction not found");
     }
 
     const paramsToUpdate = removeNullish({
@@ -125,8 +125,6 @@ class TransactionService {
       date,
       name,
     });
-
-    console.log("Params to update:", paramsToUpdate);
 
     await repository.update(transactionId, paramsToUpdate);
 

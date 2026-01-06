@@ -140,7 +140,7 @@ model GetAllTransactionsResponse {
     data: TransactionData[];
     @doc("Current page number")
     @example(1)
-    page: int32;
+    currentPage: int32;
     @doc("Number of items per page")
     @example(10)
     perPage: int32;

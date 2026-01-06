@@ -5,12 +5,11 @@ import { transactionService } from "@/services/index.js";
 export const getAllTransactions = async (req: Request, res: Response) => {
   const { userId } = req.user!;
 
-  console.log("Filters:", req.query);
-
   const { currentPage, perPage, total, transactions } = await transactionService.getAllTransactions(
     userId,
     req.query,
   );
+
   res.status(200).json({
     currentPage,
     data: transactions,

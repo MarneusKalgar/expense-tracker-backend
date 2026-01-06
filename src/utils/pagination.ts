@@ -9,13 +9,14 @@ interface PaginationResult {
   offset: number;
 }
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_PER_PAGE = 10;
+const MAX_PER_PAGE = 100;
+
 export const getPagination = ({ page, perPage }: PaginationParams): PaginationResult => {
-  const parsedPage = Number(page);
-  const parsedLimit = Number(perPage);
+  const currentPage = Math.max(1, Number(page) || DEFAULT_PAGE);
+  const limit = Math.min(MAX_PER_PAGE, Math.max(1, Number(perPage) || DEFAULT_PER_PAGE));
+  const offset = (currentPage - 1) * limit;
 
-  const resolvedPage = isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
-  const resolvedLimit = isNaN(parsedLimit) || parsedLimit < 1 ? 10 : parsedLimit;
-  const offset = (resolvedPage - 1) * resolvedLimit;
-
-  return { currentPage: resolvedPage, limit: resolvedLimit, offset };
+  return { currentPage, limit, offset };
 };
